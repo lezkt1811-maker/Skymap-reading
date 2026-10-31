@@ -1,51 +1,57 @@
-# starchart13 proof dashboard
+# starchart13 proof dashboard builder
 
-A local, browser-based tool for assembling a 13-sign chart wheel, a planet
-placement list, and up to 9 sky-verification screenshots into a single
-composite proof image.
+A browser tool that matches each planet on a 13-sign chart wheel to a real
+sky photo taken at the same moment, then exports the result as a PNG or shares
+it as an interactive page.
 
-Everything runs client-side (HTML5 canvas + FileReader) — no server,
-no upload, no dependencies.
+Open `index.html` in any modern browser. There is no build step and nothing to install.
 
-## Run it locally
+## Quick start
 
-Just open `index.html` in any browser. No build step, no install.
+1. Click **Try a sample chart first** in the sidebar. It loads a practice wheel
+   and four sky photos so you can see every step.
+2. Work through the numbered steps in the sidebar, top to bottom. The banner above
+   the wheel always tells you what to do next.
 
-```bash
-open index.html      # macOS
-start index.html      # Windows
-xdg-open index.html   # Linux
+| Step | What you do |
+| --- | --- |
+| 1. Upload your chart wheel | Name the chart and choose the wheel image. |
+| 2. Enter the planet list | Type or paste one planet per line, or upload a screenshot of the list to read it automatically. |
+| 3. Add a sky photo for each planet | Upload the planet's sky screenshot, press **Draw box on wheel**, then drag a box around the planet's symbol on the wheel. |
+| 4. Point the arrows and lock them | Open a planet, drag the arrow onto the planet on the wheel and then on the sky photo, and press **Lock**. |
+| 5. Export or share (optional) | Export a PNG, preview the narrated walkthrough, save the chart to this browser, or open the interactive view. |
+| Advanced: AI voice (optional) | Add an ElevenLabs key to replace the device voice with a more natural one. |
+
+## Your data
+
+- Wheel, screenshots, and the planet list stay in your browser. They are never uploaded anywhere.
+- **Save to library** stores charts in this browser's local storage only. Clearing site data removes them.
+- The **planet-list OCR** runs in your browser using tesseract.js, loaded from jsDelivr.
+- If you add an **ElevenLabs** key, the narration text is sent to ElevenLabs to generate the voice.
+  The key is saved only in this browser. Use **Forget saved key** to remove it.
+- The page loads fonts from Google Fonts.
+
+## Project layout
+
+```
+index.html          Page structure (the sidebar steps and the main stage)
+css/styles.css      All styling
+js/ui.js            Toast messages and the step tracker
+js/core.js          Shared state, planet-list OCR
+js/chart-library.js Saving, loading, and the interactive viewer
+js/wheel-regions.js Wheel upload, drawing boxes, drag-to-pin arrows
+js/gallery.js       Planet gallery, comparison view, thumbnails
+js/export.js        PNG export
+js/narration.js     Walkthrough timeline, narration text, and drawing
+js/preview.js       Live preview, device voices, ElevenLabs controls
+js/sample.js        Generates the practice chart
 ```
 
-## Host it for free with GitHub Pages
+Scripts load in the order listed in `index.html`. Each file shares global state
+with the others, so keep that order.
 
-1. Create a new repo on GitHub (e.g. `starchart13-proof-dashboard`) and
-   push this folder to it:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/<your-username>/starchart13-proof-dashboard.git
-   git push -u origin main
-   ```
-2. In the repo, go to **Settings → Pages**.
-3. Under "Build and deployment", set **Source** to `Deploy from a branch`,
-   branch `main`, folder `/ (root)`.
-4. Save. GitHub will give you a live URL, typically:
-   `https://<your-username>.github.io/starchart13-proof-dashboard/`
+## Troubleshooting
 
-That live URL runs as a normal webpage (not inside a sandboxed preview),
-so file uploads, canvas rendering, and PNG export all work as expected.
-
-## Files
-
-- `index.html` — the entire tool (markup, styles, and logic in one file)
-
-## Notes
-
-- Uploaded images never leave the browser; nothing is sent anywhere.
-- "Export composite PNG" flattens the wheel, the planet list, and the
-  proof grid into one downloadable image.
-- To reuse this for a different chart, just refresh the page — all state
-  is in-memory only and clears on reload.
+- **OCR reads the list badly.** Crop the screenshot to just the planet rows, then retry, or type the list.
+- **Save fails with a storage message.** Browser storage is full. Use fewer or smaller photos, or export a PNG instead.
+- **Preview has no voice.** Some devices have no English voices. Add an ElevenLabs key under Advanced.

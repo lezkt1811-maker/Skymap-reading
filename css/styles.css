@@ -490,6 +490,7 @@ button.planet-click-item{ width:100%; text-align:left; min-height:44px; }
   .stage{ padding:16px 14px 80px; }
   .next-step{
     position:sticky; top:0; z-index:40; margin:0 -14px 16px; border-radius:0; border-left:none; border-right:none;
+    background:linear-gradient(rgba(249,240,2,0.12), rgba(249,240,2,0.12)), #0b0322;
     padding:12px 14px; font-size:14px;
   }
   .compare-active{ grid-template-columns:1fr; }

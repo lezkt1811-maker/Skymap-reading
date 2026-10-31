@@ -1,59 +1,27 @@
-// Sample chart: draws a stand-in wheel and four sky photos so a new user can
-// practise every step before using their own images.
+// Practice chart built from a real chart wheel screenshot and a planet table.
+// The sky photos are generated stand-ins, because no real sky photos were supplied.
+// Practise on this: draw a box around each planet on the wheel, then point the arrows.
 
-const SAMPLE_SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-// angle = degrees clockwise from the top of the wheel (Aries at 0°, 30° per sign)
+// Planet list transcribed from the sample planet table. Sun and Venus are left out
+// because their degree readings in that screenshot are outside a sign (0–29°).
 const SAMPLE_PLANETS = [
-  { label: 'Sun',   angle: 250, color: '#f9f002', sky: [0.30, 0.34], text: "Sun · 10°00' Sagittarius" },
-  { label: 'Moon',  angle: 40,  color: '#00f6ff', sky: [0.68, 0.22], text: "Moon · 10°00' Taurus" },
-  { label: 'Mars',  angle: 155, color: '#ff4d6d', sky: [0.52, 0.60], text: "Mars · 05°00' Virgo" },
-  { label: 'Venus', angle: 310, color: '#39ff8f', sky: [0.20, 0.72], text: "Venus · 10°00' Aquarius" }
+  { label: 'Moon',    text: "Moon · 1°07' Gemini",         color: '#00f6ff' },
+  { label: 'Mercury', text: "Mercury · 10°04' Libra",      color: '#c8ff3d' },
+  { label: 'Mars',    text: "Mars · 19°25' Cancer",        color: '#ff4d6d' },
+  { label: 'Jupiter', text: "Jupiter · 4°47' Leo",         color: '#ffb347' },
+  { label: 'Saturn',  text: "Saturn · 17°04' Pisces",      color: '#a742ff' },
+  { label: 'Uranus',  text: "Uranus · 11°25' Taurus",      color: '#39ff8f' },
+  { label: 'Neptune', text: "Neptune · 9°48' Pisces",      color: '#4d9dff' },
+  { label: 'Pluto',   text: "Pluto · 2°47' Capricorn",     color: '#ff2ee6' }
 ];
 
-// Small seeded random generator so the sample looks the same every time.
+// Small seeded random generator so the stand-in sky photos look the same every time.
 function sampleRandom(seed){
   let s = seed;
   return () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296;
 }
 
-function drawSampleWheel(){
-  const size = 1200, c = size / 2;
-  const canvas = document.createElement('canvas');
-  canvas.width = size; canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#0b0322'; ctx.fillRect(0, 0, size, size);
-  const pt = (r, deg) => {
-    const a = deg * Math.PI / 180;
-    return { x: c + r * Math.sin(a), y: c - r * Math.cos(a) };
-  };
-
-  // Ring and sign dividers
-  ctx.strokeStyle = '#3a1a66'; ctx.lineWidth = 4;
-  [560, 400].forEach(r => { ctx.beginPath(); ctx.arc(c, c, r, 0, Math.PI * 2); ctx.stroke(); });
-  for (let i = 0; i < 12; i++){
-    const a = pt(400, i * 30), b = pt(560, i * 30);
-    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-  }
-
-  // Sign names (neutral grey, so they are not mistaken for planet colours)
-  ctx.fillStyle = '#c8c8c8'; ctx.font = 'bold 26px sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  SAMPLE_SIGNS.forEach((name, i) => {
-    const p = pt(525, i * 30 + 15);
-    ctx.fillText(name, p.x, p.y);
-  });
-
-  // Planet markers: a short leader line plus a coloured glyph
-  SAMPLE_PLANETS.forEach(p => {
-    const inner = pt(400, p.angle), glyph = pt(470, p.angle);
-    ctx.strokeStyle = p.color; ctx.lineWidth = 5;
-    ctx.beginPath(); ctx.moveTo(inner.x, inner.y); ctx.lineTo(glyph.x, glyph.y); ctx.stroke();
-    ctx.fillStyle = p.color;
-    ctx.beginPath(); ctx.arc(glyph.x, glyph.y, 16, 0, Math.PI * 2); ctx.fill();
-  });
-  return canvas.toDataURL('image/png');
-}
-
+// Generated stand-in sky photo: a dark starfield with the planet marked at a random spot.
 function drawSampleSky(planet, index){
   const w = 1080, h = 1440;
   const canvas = document.createElement('canvas');
@@ -69,8 +37,7 @@ function drawSampleSky(planet, index){
     ctx.beginPath(); ctx.arc(rand() * w, rand() * h, 0.8 + rand() * 2.2, 0, Math.PI * 2); ctx.fill();
   }
   ctx.globalAlpha = 1;
-  // The planet itself, with a soft glow
-  const x = planet.sky[0] * w, y = planet.sky[1] * h;
+  const x = (0.15 + rand() * 0.7) * w, y = (0.15 + rand() * 0.7) * h;
   const glow = ctx.createRadialGradient(x, y, 4, x, y, 90);
   glow.addColorStop(0, planet.color); glow.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(x, y, 90, 0, Math.PI * 2); ctx.fill();
@@ -84,7 +51,7 @@ function buildSampleChart(){
   return {
     title: 'Sample chart (practice)',
     planetList: SAMPLE_PLANETS.map(p => p.text).join('\n'),
-    wheelDataURL: drawSampleWheel(),
+    wheelDataURL: SAMPLE_WHEEL_DATA_URL,
     slots: SAMPLE_PLANETS.map((p, i) => ({
       label: p.label,
       dataURL: drawSampleSky(p, i),

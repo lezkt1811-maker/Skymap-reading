@@ -78,3 +78,21 @@ function refreshSteps(){
   banner.appendChild(strong);
   banner.appendChild(document.createTextNode(text));
 }
+
+// Text size for the sidebar (normal / large / extra large). The choice is remembered
+// on this device; if storage is blocked the setting still works for the session.
+const TEXT_SIZES = ['normal', 'large', 'xlarge'];
+function setTextSize(size){
+  if (!TEXT_SIZES.includes(size)) size = 'normal';
+  document.documentElement.dataset.textSize = size;
+  document.querySelectorAll('.size-control button').forEach(btn => {
+    btn.setAttribute('aria-pressed', String(btn.dataset.size === size));
+  });
+  try { localStorage.setItem('starchart13-text-size', size); } catch (e) { /* storage blocked */ }
+}
+document.querySelectorAll('.size-control button').forEach(btn => {
+  btn.addEventListener('click', () => setTextSize(btn.dataset.size));
+});
+let savedTextSize = 'normal';
+try { savedTextSize = localStorage.getItem('starchart13-text-size') || 'normal'; } catch (e) { /* storage blocked */ }
+setTextSize(savedTextSize);

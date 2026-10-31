@@ -1,7 +1,7 @@
   :root{
     --void:#050014; --void-2:#0b0322; --panel:#0c0428; --line:#3a1a66;
     --cyan:#00f6ff; --magenta:#ff2ee6; --violet:#a742ff; --yellow:#f9f002; --green:#39ff8f;
-    --text:#eafcff; --text-dim:#8b8fc4;
+    --text:#eafcff; --text-dim:#a9aed9;
     --rainbow: linear-gradient(90deg, var(--magenta), var(--violet), var(--cyan), var(--green), var(--yellow), var(--magenta));
   }
   *{box-sizing:border-box;}
@@ -17,10 +17,10 @@
     background:repeating-linear-gradient(0deg, #fff 0px, transparent 1px, transparent 3px);
     mix-blend-mode:overlay;
   }
-  .app{ display:grid; grid-template-columns: 360px 1fr; min-height:100vh; }
+  .app{ display:grid; grid-template-columns: calc(360px * var(--z, 1)) 1fr; min-height:100vh; }
   @media (max-width:960px){ .app{ grid-template-columns:1fr; } }
 
-  .sidebar{ background:linear-gradient(180deg, var(--panel), var(--void)); border-right:1px solid var(--magenta); box-shadow: 2px 0 24px -6px rgba(255,46,230,0.35); padding:28px 22px; overflow-y:auto; }
+  .sidebar{ background:linear-gradient(180deg, var(--panel), var(--void)); border-right:1px solid var(--magenta); box-shadow: 2px 0 24px -6px rgba(255,46,230,0.35); padding:28px 22px; overflow-y:auto; zoom:var(--z, 1); width:360px; }
   .brand{
     font-family:'Orbitron',sans-serif; font-size:23px; font-weight:800; margin-bottom:4px; letter-spacing:0.03em;
     background:var(--rainbow); background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
@@ -31,7 +31,7 @@
   .tagline{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--cyan); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:28px; text-shadow:0 0 8px rgba(0,246,255,0.6); }
 
   .field-group{ margin-bottom:22px; }
-  .field-label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--violet); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; display:block; text-shadow:0 0 6px rgba(167,66,255,0.5); }
+  .field-label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:#c08bff; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; display:block; text-shadow:0 0 6px rgba(167,66,255,0.5); }
   input[type=text]{ width:100%; background:var(--void-2); border:1px solid var(--line); border-radius:6px; color:var(--text); padding:9px 10px; font-family:'Inter'; font-size:13px; }
   input[type=text]:focus{ outline:none; border-color:var(--cyan); box-shadow:0 0 0 2px rgba(0,246,255,0.25), 0 0 14px rgba(0,246,255,0.35); }
   textarea{ width:100%; min-height:100px; background:var(--void-2); border:1px solid var(--line); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:12px; padding:10px; resize:vertical; }
@@ -248,7 +248,7 @@
   /* Viewer / interactive mode */
   body.viewer-mode .builder-only{ display:none !important; }
   body.viewer-mode .sidebar{ width:280px; }
-  body.viewer-mode .app{ grid-template-columns: 280px 1fr; }
+  body.viewer-mode .app{ grid-template-columns: calc(280px * var(--z, 1)) 1fr; }
   @media (max-width:960px){ body.viewer-mode .app{ grid-template-columns:1fr; } }
   .viewer-only{ display:none; }
   body.viewer-mode .viewer-only{ display:block; }
@@ -416,7 +416,7 @@ button.export.alt{ background:linear-gradient(90deg,#39ff8f,#00f6ff,#39ff8f); ba
 .stage-section{ margin-bottom:30px; }
 .section-heading{
   font-family:'Orbitron',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
-  color:var(--violet); margin:0 0 10px; text-shadow:0 0 8px rgba(167,66,255,0.5);
+  color:#c08bff; margin:0 0 10px; text-shadow:0 0 8px rgba(167,66,255,0.5);
 }
 .stage-section .hint{ margin:-4px 0 10px; }
 
@@ -437,4 +437,85 @@ button.export.alt{ background:linear-gradient(90deg,#39ff8f,#00f6ff,#39ff8f); ba
 @media (max-width:960px){
   .sidebar{ overflow-y:visible; }
   .stage{ padding:20px 16px; }
+}
+
+/* ===================================================================
+   Accessibility, text size, and phone layout
+   =================================================================== */
+html{ --z:1; }
+html[data-text-size="large"]{ --z:1.15; }
+html[data-text-size="xlarge"]{ --z:1.3; }
+
+:focus-visible{ outline:3px solid var(--yellow); outline-offset:2px; }
+.skip-link{
+  position:absolute; left:12px; top:-80px; z-index:500; background:var(--yellow); color:#050014;
+  padding:12px 16px; border-radius:6px; font-family:'Inter',sans-serif; font-weight:700; text-decoration:none;
+}
+.skip-link:focus{ top:12px; }
+
+.size-control{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:0 0 18px; }
+.size-label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); margin-right:4px; }
+.size-control button{
+  min-width:44px; min-height:44px; padding:0 10px; border:1px solid var(--line); border-radius:6px;
+  background:var(--void-2); color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; cursor:pointer;
+}
+.size-control button[aria-pressed="true"]{ border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 10px rgba(0,246,255,0.35); }
+
+/* Controls that were divs are now native buttons: reset their browser styling */
+button.drop{ width:100%; font-family:'Inter',sans-serif; font-size:12px; line-height:1.4; min-height:44px; display:block; }
+button.thumb{ padding:0; font:inherit; color:inherit; text-align:left; }
+button.thumb:disabled{ cursor:default; opacity:1; }
+button.planet-click-item{ width:100%; text-align:left; min-height:44px; }
+.saved-item{ display:flex; gap:6px; align-items:stretch; padding:0; border:1px solid var(--line); border-radius:5px; background:var(--void-2); }
+.saved-open{
+  flex:1; min-width:0; min-height:44px; padding:8px 10px; border:none; background:transparent; color:var(--text);
+  font-family:'Inter',sans-serif; font-size:13px; text-align:left; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.saved-open:hover{ color:var(--cyan); }
+.saved-del{ min-width:44px; border:none; background:transparent; color:var(--text-dim); font-size:13px; cursor:pointer; }
+.saved-del:hover{ color:var(--magenta); }
+
+/* Motion: respect the device setting */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* Phone and small tablet layout: sidebar stacks above the wheel */
+@media (max-width:960px){
+  .app, body.viewer-mode .app{ grid-template-columns:1fr; }
+  .sidebar{ overflow-y:visible; border-right:none; border-bottom:1px solid var(--magenta); }
+}
+@media (max-width:700px){
+  .sidebar{ padding:20px 16px; }
+  .stage{ padding:16px 14px 80px; }
+  .next-step{
+    position:sticky; top:0; z-index:40; margin:0 -14px 16px; border-radius:0; border-left:none; border-right:none;
+    padding:12px 14px; font-size:14px;
+  }
+  .compare-active{ grid-template-columns:1fr; }
+  .gallery-row{ grid-template-columns:1fr; gap:12px; }
+  .gallery-col .zoom-box{ max-height:none; }
+  .thumb-grid{ grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:8px; }
+  .mode-banner{ font-size:13px; }
+  .step summary{ min-height:52px; padding:12px; }
+  .step-body{ padding:6px 14px 16px; }
+  .region-btn, .lock-btn, .gallery-lock-btn, .ghost-btn, .mode-toggle-btn, .save-row button, .export, .proof-row-top input[type=text] { min-height:44px; }
+  .region-btn{ font-size:12.5px; }
+  .lock-btn{ font-size:12px; padding:8px 12px; }
+  .gallery-lock-btn{ min-width:44px; font-size:15px; }
+  .proof-row-top .drop{ flex:0 0 96px; font-size:12px; }
+  input[type=text], textarea, select{ font-size:16px; }
+  .toast{ bottom:76px; left:12px; right:12px; transform:none; max-width:none; }
+  .back-to-top{ bottom:16px; right:12px; min-height:44px; padding:10px 16px; }
+  .preview-topbar button{ min-height:44px; min-width:44px; }
+  .preview-startcard{ padding:20px; }
+}
+.ghost-btn{ min-height:44px; }
+.region-btn{ min-height:36px; }
+@media (max-width:700px){
+  input[type=text], select{ min-height:44px; }
+  .region-btn{ min-height:44px; }
+}
+@media (max-width:960px){
+  .sidebar{ width:calc(100vw / var(--z, 1)); }
 }

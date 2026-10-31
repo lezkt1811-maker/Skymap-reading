@@ -227,3 +227,10 @@ document.getElementById('previewPlayBtn').addEventListener('click', playPreviewT
 
 renderThumbs();
 renderPlanetClickList();
+
+// Escape closes the walkthrough preview (keyboard users).
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && previewOverlay.classList.contains('show')){
+    document.getElementById('previewCloseBtn').click();
+  }
+});

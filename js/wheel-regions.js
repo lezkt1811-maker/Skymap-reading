@@ -164,8 +164,8 @@ slots.forEach((slot, i) => {
   row.className = 'proof-row';
   row.innerHTML = `
     <div class="proof-row-top">
-      <input type="text" placeholder="Planet name" class="proof-label" data-idx="${i}" value="${esc(slot.label)}">
-      <div class="drop" data-idx="${i}">Choose image</div>
+      <input type="text" placeholder="Planet name" aria-label="Planet name, row ${i+1}" class="proof-label" data-idx="${i}" value="${esc(slot.label)}">
+      <button type="button" class="drop" data-idx="${i}" aria-label="Choose sky photo for ${esc(slot.label)}">Choose image</button>
       <input type="file" accept="image/*" class="proof-file" data-idx="${i}">
     </div>
     <button class="region-btn" data-idx="${i}" disabled>Draw box on wheel</button>

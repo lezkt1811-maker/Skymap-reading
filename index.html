@@ -10,10 +10,11 @@
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<a class="skip-link" href="#stageEl">Skip to the chart wheel</a>
 <canvas class="pin-magnifier" id="pinMagnifier" width="300" height="300" hidden></canvas>
 
 <!-- Live preview overlay (opened from "Preview narrated walkthrough") -->
-<div class="preview-overlay" id="previewOverlay">
+<div class="preview-overlay" id="previewOverlay" role="dialog" aria-modal="true" aria-label="Walkthrough preview">
   <div class="preview-topbar">
     <span id="previewStatus">ready</span>
     <button id="previewCloseBtn" type="button">✕ Close</button>
@@ -28,15 +29,22 @@
     </div>
     <button id="previewPlayBtn" class="primary-btn" type="button">▶ Play preview</button>
   </div>
-  <canvas id="previewCanvas"></canvas>
+  <canvas id="previewCanvas" role="img" aria-label="Walkthrough preview"></canvas>
 </div>
 
 <div class="app">
 
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Setup steps">
     <div class="brand">star<span>chart13</span></div>
     <div class="tagline" id="taglineEl">proof dashboard builder</div>
     <a class="site-link" href="https://starchart13.com" target="_blank" rel="noopener">starchart13.com ↗</a>
+
+    <div class="size-control" role="group" aria-label="Text size">
+      <span class="size-label" aria-hidden="true">Text size</span>
+      <button type="button" data-size="normal" aria-pressed="true" aria-label="Normal text size">A</button>
+      <button type="button" data-size="large" aria-pressed="false" aria-label="Large text size">A+</button>
+      <button type="button" data-size="xlarge" aria-pressed="false" aria-label="Extra large text size">A++</button>
+    </div>
 
     <!-- ===== VIEWER MODE: clean list for sharing ===== -->
     <div class="viewer-only">
@@ -76,7 +84,7 @@
           </div>
           <div class="field-group">
             <span class="field-label">Wheel image</span>
-            <div class="drop" id="wheelDrop">Click to choose your wheel image</div>
+            <button type="button" class="drop" id="wheelDrop">Choose your wheel image</button>
             <input type="file" id="wheelInput" accept="image/*">
           </div>
         </div>
@@ -91,10 +99,10 @@
         <div class="step-body">
           <p class="hint">One planet per line, like <code>Sun · 31°59' Sagittarius</code>. Type it, paste it, or upload a screenshot of the list to read it automatically.</p>
           <div class="field-group mt-8">
-            <div class="drop" id="planetOcrDrop">📷 Upload a screenshot of the list</div>
+            <button type="button" class="drop" id="planetOcrDrop">📷 Upload a screenshot of the list</button>
             <input type="file" id="planetOcrInput" accept="image/*">
             <div class="ocr-status" id="ocrStatus"></div>
-            <textarea id="planetList" placeholder="Sun · 31°59' Sagittarius&#10;Mars · 0°10' Aries"></textarea>
+            <textarea id="planetList" aria-label="Planet list, one planet per line" placeholder="Sun · 31°59' Sagittarius&#10;Mars · 0°10' Aries"></textarea>
           </div>
         </div>
       </details>
@@ -149,8 +157,8 @@
         <div class="step-body">
           <p class="hint">Adds a real human-sounding voice to the walkthrough. Leave blank to skip. The narration text is sent to ElevenLabs when you play or export with a key. Your key is saved only in this browser.</p>
           <div class="field-group mt-8">
-            <input type="password" id="elApiKey" placeholder="ElevenLabs API key (free tier works)" autocomplete="off">
-            <select id="elVoiceSelect" class="mt-8">
+            <input type="password" id="elApiKey" aria-label="ElevenLabs API key" placeholder="ElevenLabs API key (free tier works)" autocomplete="off">
+            <select id="elVoiceSelect" class="mt-8" aria-label="Narration voice">
               <option value="pNInz6obpgDQGcFmaJgB">Adam — calm, deep male</option>
               <option value="VR6AewLTigWG4xSOukaG">Arnold — steady, deep male</option>
               <option value="TxGEqnHWrfWFTfGW9XjX">Josh — calm, younger male</option>
@@ -158,7 +166,7 @@
               <option value="custom">Custom voice ID…</option>
             </select>
             <div class="row-inline mt-8" id="elCustomVoiceIdWrap" hidden>
-              <input type="text" id="elCustomVoiceId" placeholder="Paste or type voice ID here" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text">
+              <input type="text" id="elCustomVoiceId" aria-label="Custom voice ID" placeholder="Paste or type voice ID here" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text">
               <button type="button" id="pasteVoiceIdBtn" class="ghost-btn small">Paste</button>
             </div>
             <button type="button" id="testElBtn" class="ghost-btn green mt-8">🎙️ Test this AI voice</button>
@@ -171,8 +179,8 @@
     </div>
   </aside>
 
-  <main class="stage" id="stageEl">
-    <div id="nextStep" class="next-step" hidden></div>
+  <main class="stage" id="stageEl" aria-label="Chart wheel and proofs">
+    <div id="nextStep" class="next-step" role="status" aria-live="polite" hidden></div>
 
     <div id="modeBanner" class="mode-banner" hidden>Tap near "<span id="modeLabel"></span>" to snap a box around its symbol, or <b>drag</b> to draw the exact box. Press "Draw box on wheel" again to cancel.</div>
 
@@ -195,8 +203,8 @@
               <div class="compare-label">Wheel — zoomed</div>
               <button class="lock-btn" id="wheelLockBtn" type="button" hidden></button>
             </div>
-            <div class="zoom-box" id="zoomWheel">
-              <canvas id="zoomWheelCanvas"></canvas>
+            <div class="zoom-box" id="zoomWheel" aria-hidden="false">
+              <canvas id="zoomWheelCanvas" role="img" aria-label="Zoomed view of the planet on the wheel"></canvas>
               <div class="zoom-label" id="zoomWheelLabel" hidden></div>
               <div class="glow-pulse" id="zoomWheelGlow" hidden></div>
               <div class="zoom-hint" id="zoomWheelHint"></div>
@@ -216,7 +224,7 @@
               <button class="lock-btn" id="lockBtn" type="button" hidden></button>
             </div>
             <div class="zoom-box" id="zoomProof">
-              <canvas id="zoomProofCanvas"></canvas>
+              <canvas id="zoomProofCanvas" role="img" aria-label="Zoomed sky photo for the selected planet"></canvas>
               <div class="zoom-label" id="zoomProofLabel" hidden></div>
               <div class="proof-arrow" id="proofArrow" hidden>
                 <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -2,8 +2,10 @@
 function renderThumbs(){
   thumbGrid.innerHTML = '';
   slots.forEach((slot, i) => {
-    const t = document.createElement('div');
+    const t = document.createElement('button');
+    t.type = 'button';
     if (!slot.dataURL){
+      t.disabled = true;
       t.className = 'thumb empty';
       t.textContent = `slot ${i+1}`;
     } else {
@@ -100,6 +102,7 @@ function renderPlanetGallery(){
     const leftLockBtn = document.createElement('button');
     leftLockBtn.type = 'button';
     leftLockBtn.className = 'gallery-lock-btn';
+    leftLockBtn.setAttribute('aria-label', 'Lock or unlock the wheel arrow for ' + slot.label);
     leftTitleRow.appendChild(leftTitle);
     leftTitleRow.appendChild(leftLockBtn);
     const leftBox = document.createElement('div');
@@ -128,6 +131,7 @@ function renderPlanetGallery(){
     const rightLockBtn = document.createElement('button');
     rightLockBtn.type = 'button';
     rightLockBtn.className = 'gallery-lock-btn';
+    rightLockBtn.setAttribute('aria-label', 'Lock or unlock the sky-photo arrow for ' + slot.label);
     rightTitleRow.appendChild(rightTitle);
     rightTitleRow.appendChild(rightLockBtn);
     const rightBox = document.createElement('div');

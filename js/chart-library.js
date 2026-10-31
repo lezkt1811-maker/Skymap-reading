@@ -110,14 +110,19 @@ function renderSavedList(){
   }
   keys.forEach(key => {
     const c = charts[key];
-    const el = document.createElement('div');
-    el.className = 'saved-item';
-    el.innerHTML = `<span>${esc(c.title || key)}</span><span class="del" data-key="${esc(key)}">✕</span>`;
-    el.querySelector('span').addEventListener('click', () => {
-      loadChartData(c);
-    });
-    el.querySelector('.del').addEventListener('click', e => {
-      e.stopPropagation();
+    const row = document.createElement('div');
+    row.className = 'saved-item';
+    const openBtn = document.createElement('button');
+    openBtn.type = 'button';
+    openBtn.className = 'saved-open';
+    openBtn.textContent = c.title || key;
+    openBtn.addEventListener('click', () => loadChartData(c));
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'saved-del';
+    delBtn.textContent = '✕';
+    delBtn.setAttribute('aria-label', `Delete saved chart ${c.title || key}`);
+    delBtn.addEventListener('click', () => {
       if (confirm('Delete this saved chart?')){
         const obj = getSavedCharts();
         delete obj[key];
@@ -125,7 +130,9 @@ function renderSavedList(){
         renderSavedList();
       }
     });
-    savedListEl.appendChild(el);
+    row.appendChild(openBtn);
+    row.appendChild(delBtn);
+    savedListEl.appendChild(row);
   });
 }
 
@@ -135,7 +142,8 @@ function renderPlanetClickList(){
   planetClickList.innerHTML = '';
   slots.forEach((slot, i) => {
     if (!slot.dataURL && !slot.region) return; // only show ones with something
-    const item = document.createElement('div');
+    const item = document.createElement('button');
+    item.type = 'button';
     item.className = 'planet-click-item' + (i === pinnedIdx ? ' active' : '') + (slot.dataURL ? ' has-proof' : '');
     item.innerHTML = `<span class="dot"></span><span>${esc(slot.label || 'Slot '+(i+1))}</span>`;
     item.addEventListener('click', () => {
